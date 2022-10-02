@@ -13,4 +13,7 @@ interface UserInt extends UserTokenInt {
   passwordTokenExpirationDate: Date;
 }
 
-export interface UserSchemaInt extends UserInt {}
+export interface UserSchemaInt extends UserInt {
+  comparePassword(candidatePassword: string): Promise<Boolean>;
+  save(): any;
+}

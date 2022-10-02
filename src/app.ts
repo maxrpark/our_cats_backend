@@ -1,9 +1,12 @@
 import express, { Application, Request, Response } from "express";
 import dotenv from "dotenv";
+import "express-async-errors";
+
+import { notFound, errorHandler } from "./middleware";
+import { authRouter } from "./router/index";
+
 dotenv.config();
 const app: Application = express();
-
-import { authRouter } from "./router/index";
 
 app.use(express.json());
 
@@ -12,5 +15,8 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api/v1/auth/", authRouter);
+
+app.use(errorHandler);
+app.use(notFound);
 
 export default app;

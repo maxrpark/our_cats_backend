@@ -1,5 +1,6 @@
 import { Document, Schema, model } from "mongoose";
 import { UserSchemaInt } from "../ts/interfaces";
+import bcrypt from "bcryptjs";
 
 type UserSchemaType = UserSchemaInt & Document;
 
@@ -44,6 +45,19 @@ const UserSchema = new Schema<UserSchemaType>({
     type: Date,
   },
 });
+
+UserSchema.pre("save", async function () {
+  if (!this.isDirectModified("password")) return;
+  let salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+UserSchema.methods.comparePassword = async function (
+  candidatePassword: string
+): Promise<Boolean> {
+  let isMatch = await bcrypt.compare(candidatePassword, this.password);
+  return isMatch;
+};
 
 const User = model<UserSchemaType>("User", UserSchema);
 
