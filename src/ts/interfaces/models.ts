@@ -1,14 +1,10 @@
-export interface UserTokenInt {
-  _id: string;
-  name: string;
-  email: string;
-}
+import { UserTokenInt } from "./globalInterfaces";
 
 interface UserInt extends UserTokenInt {
   password: string;
   verificationToken: string;
   isVerified: boolean;
-  role: string;
+  email: string;
   passwordToken: string;
   passwordTokenExpirationDate: Date;
 }
@@ -16,4 +12,13 @@ interface UserInt extends UserTokenInt {
 export interface UserSchemaInt extends UserInt {
   comparePassword(candidatePassword: string): Promise<Boolean>;
   save(): any;
+}
+
+export interface TokenInt {
+  _id?: string;
+  refreshToken: string;
+  userAgent: string;
+  ip: string;
+  user: UserInt;
+  isValid: Boolean;
 }

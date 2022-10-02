@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { authenticated } from "../middleware";
 import {
   clearDB,
   register,
@@ -15,7 +16,7 @@ authRouter.route("/register").post(register);
 
 authRouter.route("/verify-email").post(verifyEmail);
 authRouter.route("/login").post(login);
-authRouter.route("/logout").post(logout);
+authRouter.route("/logout").post(authenticated, logout);
 authRouter.route("/forgot-password").post(forgotPassword);
 authRouter.route("/reset-password").post(resetPassword);
 

@@ -7,7 +7,10 @@ exports.resetPassword = exports.forgotPassword = exports.logout = exports.verify
 const http_status_codes_1 = require("http-status-codes");
 const errors_1 = require("../errors");
 const User_1 = __importDefault(require("../models/User"));
+const Token_1 = __importDefault(require("../models/Token"));
 const crypto_1 = __importDefault(require("crypto"));
+const jwt_1 = require("../utils/jwt");
+const jwt_2 = require("../utils/jwt/jwt");
 const clearDB = async (req, res) => {
     const db = await User_1.default.deleteMany({});
     res.status(http_status_codes_1.StatusCodes.OK).json(db);
@@ -57,7 +60,31 @@ const login = async (req, res) => {
     if (!isCorrectPassword) {
         throw new errors_1.BadRequest("password incorrect");
     }
-    res.status(http_status_codes_1.StatusCodes.OK).json(user);
+    const userToken = (0, jwt_1.createToken)(user);
+    let refreshToken = "";
+    const existingToken = await Token_1.default.findOne({
+        user: user === null || user === void 0 ? void 0 : user._id,
+    });
+    if (existingToken) {
+        if (!existingToken.isValid) {
+            throw new errors_1.Unauthenticated("Invalid Credentials");
+        }
+        refreshToken = existingToken.refreshToken;
+        (0, jwt_2.attachCookiesToResponse)({ res, user: userToken, refreshToken });
+        return res.status(http_status_codes_1.StatusCodes.OK).json(userToken);
+    }
+    let userAgent = req.headers["user-agent"];
+    let ip = req.ip;
+    refreshToken = crypto_1.default.randomBytes(40).toString("hex");
+    const newToken = {
+        userAgent,
+        refreshToken,
+        ip,
+        user,
+    };
+    await Token_1.default.create(newToken);
+    (0, jwt_2.attachCookiesToResponse)({ res, user: userToken, refreshToken });
+    res.status(http_status_codes_1.StatusCodes.OK).json(userToken);
 };
 exports.login = login;
 const logout = async (req, res) => {

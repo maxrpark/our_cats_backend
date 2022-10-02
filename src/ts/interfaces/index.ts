@@ -1,3 +1,4 @@
-import { UserSchemaInt } from "./models";
+import { UserSchemaInt, TokenInt } from "./models";
+import { UserTokenInt, RequestUser, TokenPayloadInt } from "./globalInterfaces";
 
-export { UserSchemaInt };
+export { UserSchemaInt, TokenInt, UserTokenInt, TokenPayloadInt, RequestUser };

@@ -2,8 +2,11 @@ import { RequestHandler, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { BadRequest, Unauthenticated } from "../errors";
 import User from "../models/User";
+import Token from "../models/Token";
 import crypto from "crypto";
-import { UserSchemaInt } from "../ts/interfaces";
+import { UserSchemaInt, TokenInt, RequestUser } from "../ts/interfaces";
+import { createToken } from "../utils/jwt";
+import { attachCookiesToResponse } from "../utils/jwt/jwt";
 
 const clearDB: RequestHandler = async (req, res) => {
   const db = await User.deleteMany({});
@@ -60,9 +63,38 @@ const login: RequestHandler = async (req, res) => {
     throw new BadRequest("password incorrect");
   }
 
-  res.status(StatusCodes.OK).json(user);
+  const userToken = createToken(user);
+  let refreshToken = "";
+
+  const existingToken: TokenInt | null = await Token.findOne({
+    user: user?._id,
+  });
+
+  if (existingToken) {
+    if (!existingToken.isValid) {
+      throw new Unauthenticated("Invalid Credentials");
+    }
+    refreshToken = existingToken.refreshToken;
+    attachCookiesToResponse({ res, user: userToken, refreshToken });
+    return res.status(StatusCodes.OK).json(userToken);
+  }
+
+  let userAgent = req.headers["user-agent"];
+  let ip = req.ip;
+  refreshToken = crypto.randomBytes(40).toString("hex");
+
+  const newToken = {
+    userAgent,
+    refreshToken,
+    ip,
+    user,
+  };
+
+  await Token.create(newToken);
+  attachCookiesToResponse({ res, user: userToken, refreshToken });
+  res.status(StatusCodes.OK).json(userToken);
 };
-const logout: RequestHandler = async (req, res) => {
+const logout = async (req: RequestUser, res: Response) => {
   res.json("logout");
 };
 const forgotPassword: RequestHandler = async (req, res) => {

@@ -4,11 +4,13 @@ import "express-async-errors";
 
 import { notFound, errorHandler } from "./middleware";
 import { authRouter } from "./router/index";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 const app: Application = express();
 
 app.use(express.json());
+app.use(cookieParser(process.env.JWT_SECRET));
 
 app.get("/", (req: Request, res: Response) => {
   res.send("<h1>Our cats</h1>");
