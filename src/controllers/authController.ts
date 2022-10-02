@@ -37,8 +37,9 @@ const register: RequestHandler = async (req, res) => {
 
   user = await User.create({ email, name, password, role, verificationToken });
 
-  res.status(StatusCodes.CREATED).json(user);
+  res.status(StatusCodes.CREATED).json({ msg: "please check your email" });
 };
+
 const verifyEmail: RequestHandler = async (req, res) => {
   res.json("verifyEmail");
 };
@@ -95,7 +96,19 @@ const login: RequestHandler = async (req, res) => {
   res.status(StatusCodes.OK).json(userToken);
 };
 const logout = async (req: RequestUser, res: Response) => {
-  res.json("logout");
+  await Token.findOneAndDelete({ user: req.user!._id });
+
+  res.cookie("accessToken", "logout", {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+
+  res.cookie("refreshToken", "logout", {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+
+  res.status(StatusCodes.OK).json({ msg: "logout" });
 };
 const forgotPassword: RequestHandler = async (req, res) => {
   res.json("forgotPassword");

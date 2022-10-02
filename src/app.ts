@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import "express-async-errors";
 
 import { notFound, errorHandler } from "./middleware";
-import { authRouter } from "./router/index";
+import { authRouter, userRouter } from "./router/index";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -17,6 +17,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api/v1/auth/", authRouter);
+app.use("/api/v1/users/", userRouter);
 
 app.use(errorHandler);
 app.use(notFound);

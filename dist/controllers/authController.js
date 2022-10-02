@@ -37,7 +37,7 @@ const register = async (req, res) => {
     const role = (await User_1.default.countDocuments({})) === 0 ? "admin" : "user";
     const verificationToken = crypto_1.default.randomBytes(40).toString("hex");
     user = await User_1.default.create({ email, name, password, role, verificationToken });
-    res.status(http_status_codes_1.StatusCodes.CREATED).json(user);
+    res.status(http_status_codes_1.StatusCodes.CREATED).json({ msg: "please check your email" });
 };
 exports.register = register;
 const verifyEmail = async (req, res) => {
@@ -88,7 +88,16 @@ const login = async (req, res) => {
 };
 exports.login = login;
 const logout = async (req, res) => {
-    res.json("logout");
+    await Token_1.default.findOneAndDelete({ user: req.user._id });
+    res.cookie("accessToken", "logout", {
+        httpOnly: true,
+        expires: new Date(Date.now()),
+    });
+    res.cookie("refreshToken", "logout", {
+        httpOnly: true,
+        expires: new Date(Date.now()),
+    });
+    res.status(http_status_codes_1.StatusCodes.OK).json({ msg: "logout" });
 };
 exports.logout = logout;
 const forgotPassword = async (req, res) => {

@@ -17,6 +17,7 @@ app.get("/", (req, res) => {
     res.send("<h1>Our cats</h1>");
 });
 app.use("/api/v1/auth/", index_1.authRouter);
+app.use("/api/v1/users/", index_1.userRouter);
 app.use(middleware_1.errorHandler);
 app.use(middleware_1.notFound);
 exports.default = app;
