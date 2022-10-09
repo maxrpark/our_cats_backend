@@ -45,8 +45,8 @@ const UserSchema = new mongoose_1.Schema({
     passwordTokenExpirationDate: {
         type: Date,
     },
-    cats: [{ type: mongoose_1.Types.ObjectId, ref: "Cat", unique: true }],
-});
+    // cats: [{ type: Types.ObjectId, ref: "Cat", unique: true }],
+}, { toJSON: { virtuals: true }, toObject: { virtuals: true } });
 UserSchema.pre("save", async function () {
     if (!this.isDirectModified("password"))
         return;
@@ -57,5 +57,11 @@ UserSchema.methods.comparePassword = async function (candidatePassword) {
     let isMatch = await bcryptjs_1.default.compare(candidatePassword, this.password);
     return isMatch;
 };
+UserSchema.virtual("catsList", {
+    ref: "Cat",
+    localField: "_id",
+    foreignField: "human",
+    justOne: false,
+});
 const User = (0, mongoose_1.model)("User", UserSchema);
 exports.default = User;

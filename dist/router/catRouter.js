@@ -2,9 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const catController_1 = require("../controllers/catController");
+const middleware_1 = require("../middleware");
 const catRouter = (0, express_1.Router)();
 catRouter.route("/clear").get(catController_1.removeAllDocuments);
 catRouter.route("/").get(catController_1.getAllCats);
 catRouter.route("/").post(catController_1.createCat);
 catRouter.route("/:id").get(catController_1.getSingleCat);
+catRouter.route("/toggle/:id").post(middleware_1.authenticated, catController_1.toggleCatList);
 exports.default = catRouter;

@@ -7,7 +7,7 @@ export interface UserInt extends UserTokenInt {
   email: string;
   passwordToken: string;
   passwordTokenExpirationDate: Date;
-  cats: CatInt;
+  // cats: CatInt;
 }
 
 export interface UserSchemaInt extends UserInt {
@@ -27,4 +27,5 @@ export interface TokenInt {
 export interface CatInt {
   _id: string;
   name: string;
+  human: UserInt;
 }

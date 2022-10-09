@@ -8,6 +8,7 @@ const CatSchema = new mongoose_1.Schema({
         minlength: 4,
         maxlength: 12,
     },
+    human: [{ type: mongoose_1.Types.ObjectId, ref: "User", unique: true, required: true }],
 });
 const Cat = (0, mongoose_1.model)("Cat", CatSchema);
 exports.default = Cat;
