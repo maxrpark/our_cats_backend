@@ -41,7 +41,7 @@ const register = async (req, res) => {
 };
 exports.register = register;
 const verifyEmail = async (req, res) => {
-    res.json("verifyEmail");
+    res.json("verifyEmail"); // TODO
 };
 exports.verifyEmail = verifyEmail;
 const login = async (req, res) => {

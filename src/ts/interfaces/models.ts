@@ -1,12 +1,13 @@
 import { UserTokenInt } from "./globalInterfaces";
 
-interface UserInt extends UserTokenInt {
+export interface UserInt extends UserTokenInt {
   password: string;
   verificationToken: string;
   isVerified: boolean;
   email: string;
   passwordToken: string;
   passwordTokenExpirationDate: Date;
+  cats: CatInt;
 }
 
 export interface UserSchemaInt extends UserInt {
@@ -21,4 +22,9 @@ export interface TokenInt {
   ip: string;
   user: UserInt;
   isValid: Boolean;
+}
+
+export interface CatInt {
+  _id: string;
+  name: string;
 }

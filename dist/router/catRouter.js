@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const catController_1 = require("../controllers/catController");
+const catRouter = (0, express_1.Router)();
+catRouter.route("/clear").get(catController_1.removeAllDocuments);
+catRouter.route("/").get(catController_1.getAllCats);
+catRouter.route("/").post(catController_1.createCat);
+catRouter.route("/:id").get(catController_1.getSingleCat);
+exports.default = catRouter;

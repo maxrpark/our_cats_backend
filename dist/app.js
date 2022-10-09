@@ -18,6 +18,7 @@ app.get("/", (req, res) => {
 });
 app.use("/api/v1/auth/", index_1.authRouter);
 app.use("/api/v1/users/", index_1.userRouter);
+app.use("/api/v1/cats/", index_1.catRouter);
 app.use(middleware_1.errorHandler);
 app.use(middleware_1.notFound);
 exports.default = app;

@@ -1,4 +1,4 @@
-import { Document, Schema, model } from "mongoose";
+import { Document, Schema, model, Types } from "mongoose";
 import { UserSchemaInt } from "../ts/interfaces";
 import bcrypt from "bcryptjs";
 
@@ -44,6 +44,7 @@ const UserSchema = new Schema<UserSchemaType>({
   passwordTokenExpirationDate: {
     type: Date,
   },
+  cats: [{ type: Types.ObjectId, ref: "Cat", unique: true }],
 });
 
 UserSchema.pre("save", async function () {

@@ -45,6 +45,7 @@ const UserSchema = new mongoose_1.Schema({
     passwordTokenExpirationDate: {
         type: Date,
     },
+    cats: [{ type: mongoose_1.Types.ObjectId, ref: "Cat", unique: true }],
 });
 UserSchema.pre("save", async function () {
     if (!this.isDirectModified("password"))

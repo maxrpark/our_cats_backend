@@ -41,8 +41,9 @@ const register: RequestHandler = async (req, res) => {
 };
 
 const verifyEmail: RequestHandler = async (req, res) => {
-  res.json("verifyEmail");
+  res.json("verifyEmail"); // TODO
 };
+
 const login: RequestHandler = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
